@@ -10,9 +10,8 @@ import com.example.noteapplication.repository.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class NoteViewModel(private val repository: NoteRepository) :
+class NoteViewModel(private val noteRepository: NoteRepository) :
     ViewModel() {
-    private lateinit var noteRepository: NoteRepository
 
     val allNotes: LiveData<List<Note>> = noteRepository.allNotes
 
@@ -29,8 +28,4 @@ class NoteViewModel(private val repository: NoteRepository) :
     }
 }
 
-class NoteViewModelFactory(private val repository: NoteRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return NoteViewModel(repository) as T
-    }
-}
+

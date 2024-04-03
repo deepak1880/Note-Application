@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        viewModel.allNotes.observe(this) {
+        viewModel.allNotes?.observe(this) {
             it.let {
                 adapter?.upDateList(it)
             }
