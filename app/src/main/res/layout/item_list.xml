@@ -9,7 +9,7 @@
     app:contentPadding="@dimen/dimens_15dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TextView
@@ -41,7 +41,16 @@
             app:layout_constraintTop_toBottomOf="@+id/noteTv"
             tools:text="@string/date" />
 
+        <ImageView
+            android:id="@+id/deleteIv"
+            android:layout_width="@dimen/dimens_15dp"
+            android:layout_height="@dimen/dimens_15dp"
+            android:src="@drawable/delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </com.google.android.material.card.MaterialCardView>

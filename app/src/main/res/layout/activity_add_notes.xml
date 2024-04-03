@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/doneIv"
+                android:id="@+id/checkIv"
                 android:layout_width="@dimen/dimens_50dp"
                 android:layout_height="@dimen/dimens_50dp"
                 android:layout_marginEnd="@dimen/dimens_20dp"

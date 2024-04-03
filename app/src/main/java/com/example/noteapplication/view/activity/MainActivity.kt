@@ -1,9 +1,11 @@
 package com.example.noteapplication.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.SearchView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -29,14 +31,23 @@ class MainActivity : AppCompatActivity() {
     private lateinit var selectedNote: Note
 
 
+    private val updateNote =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+            if (it.resultCode == Activity.RESULT_OK) {
+                val note = it.data?.getSerializableExtra("note") as? Note
+                if (note != null) {
+                    viewModel.updateNote(note)
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initUi()
-
-
 
         viewModel.allNotes?.observe(this) {
             it.let {
@@ -48,8 +59,26 @@ class MainActivity : AppCompatActivity() {
     private fun initUi() {
 
         binding.noteListingRv.layoutManager = StaggeredGridLayoutManager(2, LinearLayout.VERTICAL)
-        adapter = NoteAdapter(this)
+        adapter = NoteAdapter(this, onItemClick = {
+            val intent = Intent(this, AddNotesActivity::class.java)
+            intent.putExtra("current_note", it)
+            updateNote.launch(intent)
+        },onDeleteClick = {
+            viewModel.deleteNote(it)
+        }
+        )
         binding.noteListingRv.adapter = adapter
+
+        val getContent =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val note = it.data?.getSerializableExtra("note") as? Note
+                    if (note != null) {
+                        viewModel.insertNote(note)
+                    }
+                }
+            }
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -66,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.floatingActionButton.setOnClickListener {
             val iNext = Intent(this, AddNotesActivity::class.java)
-            startActivity(iNext)
+            getContent.launch(iNext)
         }
     }
 }

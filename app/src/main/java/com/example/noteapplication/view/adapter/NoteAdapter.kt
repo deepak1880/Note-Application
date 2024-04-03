@@ -12,6 +12,8 @@ import kotlin.random.Random
 
 class NoteAdapter(
     private val context: Context,
+    private val onItemClick: (Note) -> Unit,
+    private val onDeleteClick: (Note) -> Unit
 ) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
@@ -61,9 +63,10 @@ class NoteAdapter(
 
         noteList.clear()
 
-        for(item in fullList){
-            if(item.title?.lowercase()?.contains(search.lowercase())==true ||
-                item.note?.lowercase()?.contains(search.lowercase())==true){
+        for (item in fullList) {
+            if (item.title?.lowercase()?.contains(search.lowercase()) == true ||
+                item.note?.lowercase()?.contains(search.lowercase()) == true
+            ) {
 
                 noteList.add(item)
             }
@@ -73,6 +76,15 @@ class NoteAdapter(
 
     inner class NoteViewHolder(private val binding: ItemListBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.parentCv.setOnClickListener {
+                onItemClick.invoke(noteList[adapterPosition])
+            }
+            binding.deleteIv.setOnClickListener {
+                onDeleteClick.invoke(noteList[adapterPosition])
+            }
+        }
 
         fun bind(note: Note) {
             binding.titleTv.text = note.title
