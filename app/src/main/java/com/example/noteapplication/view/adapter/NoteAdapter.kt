@@ -1,7 +1,9 @@
 package com.example.noteapplication.view.adapter
 
 import android.content.Context
+import android.graphics.Rect
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,7 @@ class NoteAdapter(
 
     private val noteList = ArrayList<Note>()
     private val fullList = ArrayList<Note>()
+    private val colorMap = HashMap<Int?, Int>()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -90,10 +93,39 @@ class NoteAdapter(
             binding.titleTv.text = note.title
             binding.noteTv.text = note.note
             binding.dateTv.text = note.date
-            binding.parentCv.setCardBackgroundColor(ContextCompat.getColor(context, randomColor()))
 
+            if (!colorMap.containsKey(note.id)) {
+                colorMap[note.id] = ContextCompat.getColor(context, randomColor())
+            }
+            binding.parentCv.setCardBackgroundColor(colorMap[note.id]!!)
         }
-
     }
-
 }
+
+class StaggeredGridSpacingItemDecoration(
+    private val spacing: Int,
+    private val spanCount: Int
+) : RecyclerView.ItemDecoration() {
+
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        val position = parent.getChildAdapterPosition(view)
+        val column = position % spanCount
+
+        outRect.top = spacing
+        outRect.bottom = spacing
+        outRect.left = spacing
+        outRect.right = spacing
+
+        // Add spacing between columns for StaggeredGridLayoutManager
+        if (spanCount > 1) {
+            outRect.left = spacing - column * spacing / spanCount
+            outRect.right = (column + 1) * spacing / spanCount
+        }
+    }
+}
+

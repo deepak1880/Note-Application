@@ -25,8 +25,8 @@ class AddNotesActivity : AppCompatActivity() {
 
         try {
             oldNote = intent.getSerializableExtra("current_note") as? Note
-            binding.titleEtv.setText(oldNote?.title)
-            binding.noteEtv.setText(oldNote?.note)
+            binding.titleTv.setText(oldNote?.title)
+            binding.noteTv.setText(oldNote?.note)
             isUpdate = true
 
         } catch (e: Exception) {
@@ -34,16 +34,12 @@ class AddNotesActivity : AppCompatActivity() {
         }
 
         binding.checkIv.setOnClickListener {
-            val title = binding.titleEtv.text.toString()
-            val noteDescription = binding.noteEtv.text.toString()
+            val title = binding.titleTv.text.toString()
+            val noteDescription = binding.noteTv.text.toString()
 
             if (title.isNotEmpty() || noteDescription.isNotEmpty()) {
 
-//                val dateFormatter =
-//                    SimpleDateFormat("EEE, d MMM yyyy HH:mm a", Locale.getDefault()).toString()
-
-                val dateFormatter =
-                    SimpleDateFormat("EEE, d MMM yyyy HH:mm a", Locale.getDefault())
+                val dateFormatter = SimpleDateFormat("EEE, d MMM yyyy HH:mm a", Locale.getDefault())
                 val formattedDate = dateFormatter.format(Date())
 
                 if (isUpdate) {

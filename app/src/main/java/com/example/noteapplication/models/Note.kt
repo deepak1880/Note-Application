@@ -15,4 +15,5 @@ data class Note(
     val note: String?,
     @ColumnInfo(name = "date")
     val date: String
+
 ) : Serializable

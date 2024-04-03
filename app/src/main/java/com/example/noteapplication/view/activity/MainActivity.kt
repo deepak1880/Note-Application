@@ -9,13 +9,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.noteapplication.R
 import com.example.noteapplication.databinding.ActivityMainBinding
 import com.example.noteapplication.models.Note
 import com.example.noteapplication.remote.database.NoteDataBase
 import com.example.noteapplication.repository.NoteRepository
 import com.example.noteapplication.view.adapter.NoteAdapter
+import com.example.noteapplication.view.adapter.StaggeredGridSpacingItemDecoration
 import com.example.noteapplication.view.viewmodel.NoteViewModel
 import com.example.noteapplication.view.viewmodel.NoteViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,9 +29,8 @@ class MainActivity : AppCompatActivity() {
         NoteViewModelFactory(repo)
     }
 
-    private var dataBase: NoteDataBase? = null
     private var adapter: NoteAdapter? = null
-    private lateinit var selectedNote: Note
+    private var deletedNote: Note? = null
 
 
     private val updateNote =
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         initUi()
 
-        viewModel.allNotes?.observe(this) {
+        viewModel.allNotes.observe(this) {
             it.let {
                 adapter?.upDateList(it)
             }
@@ -63,11 +65,16 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddNotesActivity::class.java)
             intent.putExtra("current_note", it)
             updateNote.launch(intent)
-        },onDeleteClick = {
-            viewModel.deleteNote(it)
+        }, onDeleteClick = {
+            deleteNote(it)
         }
         )
         binding.noteListingRv.adapter = adapter
+
+        val spacingInPixels = resources.getDimensionPixelSize(R.dimen.dimens_5dp)
+        val spanCount = 2
+        val decoration = StaggeredGridSpacingItemDecoration(spacingInPixels, spanCount)
+        binding.noteListingRv.addItemDecoration(decoration)
 
         val getContent =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -97,5 +104,21 @@ class MainActivity : AppCompatActivity() {
             val iNext = Intent(this, AddNotesActivity::class.java)
             getContent.launch(iNext)
         }
+
+    }
+
+    private fun deleteNote(note: Note) {
+
+        deletedNote = note
+        viewModel.deleteNote(note)
+
+        Snackbar.make(binding.root, "Note deleted", Snackbar.LENGTH_LONG)
+            .setAction("Undo") {
+                deletedNote?.let {
+                    viewModel.insertNote(it)
+                    deletedNote = null
+                }
+            }
+            .show()
     }
 }
