@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun initUi() {
 
         binding.noteListingRv.layoutManager = StaggeredGridLayoutManager(2, LinearLayout.VERTICAL)
-        adapter = NoteAdapter(this, onItemClick = {
+        adapter = NoteAdapter( onItemClick = {
             val intent = Intent(this, AddNotesActivity::class.java)
             intent.putExtra("current_note", it)
             updateNote.launch(intent)
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         deletedNote = note
         viewModel.deleteNote(note)
 
-        Snackbar.make(binding.root, "Note deleted", Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.root, "Note moved to trash", Snackbar.LENGTH_LONG)
             .setAction("Undo") {
                 deletedNote?.let {
                     viewModel.insertNote(it)

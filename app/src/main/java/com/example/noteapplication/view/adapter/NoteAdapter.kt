@@ -13,7 +13,6 @@ import com.example.noteapplication.models.Note
 import kotlin.random.Random
 
 class NoteAdapter(
-    private val context: Context,
     private val onItemClick: (Note) -> Unit,
     private val onDeleteClick: (Note) -> Unit
 ) :
@@ -95,7 +94,7 @@ class NoteAdapter(
             binding.dateTv.text = note.date
 
             if (!colorMap.containsKey(note.id)) {
-                colorMap[note.id] = ContextCompat.getColor(context, randomColor())
+                colorMap[note.id] = ContextCompat.getColor(binding.root.context, randomColor())
             }
             binding.parentCv.setCardBackgroundColor(colorMap[note.id]!!)
         }

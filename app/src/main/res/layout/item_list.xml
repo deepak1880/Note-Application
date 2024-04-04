@@ -43,8 +43,8 @@
 
         <ImageView
             android:id="@+id/deleteIv"
-            android:layout_width="@dimen/dimens_15dp"
-            android:layout_height="@dimen/dimens_15dp"
+            android:layout_width="@dimen/dimens_20dp"
+            android:layout_height="@dimen/dimens_20dp"
             android:src="@drawable/delete"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
