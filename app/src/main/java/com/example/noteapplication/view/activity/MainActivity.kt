@@ -61,13 +61,16 @@ class MainActivity : AppCompatActivity() {
     private fun initUi() {
 
         binding.noteListingRv.layoutManager = StaggeredGridLayoutManager(2, LinearLayout.VERTICAL)
-        adapter = NoteAdapter( onItemClick = {
-            val intent = Intent(this, AddNotesActivity::class.java)
-            intent.putExtra("current_note", it)
-            updateNote.launch(intent)
-        }, onDeleteClick = {
-            deleteNote(it)
-        }
+        adapter = NoteAdapter(
+            onItemClick = {
+                val intent = Intent(this, AddNotesActivity::class.java)
+                intent.putExtra("current_note", it)
+                updateNote.launch(intent)
+            }, onDeleteClick = {
+                deleteNote(it)
+            }, onLongPress = {
+                toggleSelection(it)
+            }
         )
         binding.noteListingRv.adapter = adapter
 
@@ -120,5 +123,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             .show()
+    }
+
+    private fun toggleSelection(note: Note) {
+        adapter?.toggleSelection(note)
     }
 }

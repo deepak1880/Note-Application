@@ -14,14 +14,15 @@ import kotlin.random.Random
 
 class NoteAdapter(
     private val onItemClick: (Note) -> Unit,
-    private val onDeleteClick: (Note) -> Unit
+    private val onDeleteClick: (Note) -> Unit,
+    private val onLongPress: (Note) -> Unit
 ) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     private val noteList = ArrayList<Note>()
     private val fullList = ArrayList<Note>()
     private val colorMap = HashMap<Int?, Int>()
-
+    private val selectedNotes = HashSet<Note>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val binding = ItemListBinding.inflate(LayoutInflater.from(parent.context))
@@ -83,6 +84,11 @@ class NoteAdapter(
             binding.parentCv.setOnClickListener {
                 onItemClick.invoke(noteList[adapterPosition])
             }
+            binding.parentCv.setOnLongClickListener {
+                val note = noteList[adapterPosition]
+                toggleSelection(note)
+                true // Consume the long press event
+            }
             binding.deleteIv.setOnClickListener {
                 onDeleteClick.invoke(noteList[adapterPosition])
             }
@@ -97,7 +103,24 @@ class NoteAdapter(
                 colorMap[note.id] = ContextCompat.getColor(binding.root.context, randomColor())
             }
             binding.parentCv.setCardBackgroundColor(colorMap[note.id]!!)
+
+            if (selectedNotes.contains(note)) {
+                binding.parentCv.alpha = 0.5f
+            } else {
+                binding.parentCv.alpha = 1f
+            }
         }
+        
+    }
+
+    fun toggleSelection(note: Note) {
+        if (selectedNotes.contains(note)) {
+            selectedNotes.remove(note)
+        } else {
+            selectedNotes.add(note)
+        }
+        notifyDataSetChanged() // Update UI
+
     }
 }
 
@@ -126,5 +149,6 @@ class StaggeredGridSpacingItemDecoration(
             outRect.right = (column + 1) * spacing / spanCount
         }
     }
+    
 }
 
